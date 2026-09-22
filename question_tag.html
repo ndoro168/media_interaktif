@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Pembelajaran Interaktif - Question Tag (SMP)</title>
+  <style>
+    :root {
+      --primary: #8b5cf6;
+      --primary-hover: #7c3aed;
+      --bg: #f5f3ff;
+      --card-bg: #ffffff;
+      --text: #1e1b4b;
+      --accent: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; }
+
+    header { background-color: var(--primary); color: white; padding: 1.5rem; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    
+    nav { background: #312e81; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; padding: 0.75rem; sticky: top; }
+    nav button { background: transparent; border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
+    nav button:hover, nav button.active { background-color: var(--primary); font-weight: bold; }
+
+    main { flex: 1; padding: 1.5rem; max-width: 900px; margin: 0 auto; width: 100%; }
+
+    .page { display: none; background: var(--card-bg); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); animation: fadeIn 0.3s ease-in-out; }
+    .page.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 { color: var(--primary); margin-bottom: 1rem; border-bottom: 2px solid var(--bg); padding-bottom: 0.5rem; }
+    h3 { margin-top: 1rem; margin-bottom: 0.5rem; color: #1e1b4b; }
+    p { margin-bottom: 1rem; line-height: 1.6; }
+
+    /* Table Styling */
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { border: 1px solid #ddd6fe; padding: 0.6rem; text-align: left; }
+    th { background-color: #ede9fe; color: #5b21b6; }
+
+    /* Button Styling */
+    .btn { background-color: var(--primary); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .btn:hover { background-color: var(--primary-hover); }
+    .btn-audio { background-color: #10b981; margin-left: 0.5rem; padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+
+    /* Drag and Drop Styling */
+    .drag-container { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .draggable { background: #ddd6fe; color: #5b21b6; padding: 0.5rem 1rem; border-radius: 4px; cursor: grab; font-weight: bold; border: 1px dashed #8b5cf6; }
+    .dropzone { border: 2px dashed #a78bfa; min-width: 120px; min-height: 38px; display: inline-block; vertical-align: middle; border-radius: 4px; background: #f8fafc; text-align: center; line-height: 38px; margin: 0 0.3rem; }
+
+    /* Grammar Inputs & Quiz Option */
+    .input-fill { padding: 0.4rem 0.8rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 1rem; }
+    .quiz-opt { display: block; width: 100%; text-align: left; padding: 0.8rem; margin-bottom: 0.5rem; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; cursor: pointer; }
+    .quiz-opt:hover { background: #ede9fe; }
+
+    /* Feedback */
+    .feedback { font-weight: bold; margin-top: 1rem; padding: 0.75rem; border-radius: 6px; display: none; }
+    .feedback.correct { background: #d1fae5; color: #065f46; display: block; }
+    .feedback.incorrect { background: #fee2e2; color: #991b1b; display: block; }
+
+    /* Certificate View */
+    #certificate { border: 8px double var(--primary); padding: 2rem; text-align: center; background: #fffbe3; border-radius: 8px; margin-top: 1rem; }
+
+    @media (max-width: 600px) {
+      nav { justify-content: flex-start; overflow-x: auto; }
+      nav button { font-size: 0.8rem; padding: 0.4rem 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Media Pembelajaran Interaktif</h1>
+    <p>Bahasa Inggris SMP — Question Tag</p>
+  </header>
+
+  <nav id="navbar">
+    <button onclick="showPage('home')" class="active">🏠 Home</button>
+    <button onclick="showPage('materi')">📚 Materi</button>
+    <button onclick="showPage('listening')">🎧 Listening</button>
+    <button onclick="showPage('speaking')">🗣️ Speaking</button>
+    <button onclick="showPage('grammar')">✍️ Grammar</button>
+    <button onclick="showPage('quiz')">🎯 Quiz</button>
+    <button onclick="showPage('challenge')">🏆 Challenge</button>
+    <button onclick="showPage('progress')">📊 Nilai</button>
+    <button onclick="showPage('petunjuk')">💡 Petunjuk</button>
+  </nav>
+
+  <main>
+
+    <!-- 1. HOME -->
+    <section id="home" class="page active">
+      <h2>Selamat Datang! 👋</h2>
+      <p>Modul interaktif ini dirancang untuk membantumu mempelajari materi <strong>Question Tag</strong> (Penjelas/Penegas Kalimat) dalam bahasa Inggris secara mandiri atau dengan bimbingan guru.</p>
+      <div style="text-align: center; margin: 2rem 0;">
+        <img src="https://illustrations.popsy.co/sky/questions.svg" alt="Question Tag Concept" style="max-width: 230px; width: 100%;">
+      </div>
+      <p><strong>Target Pembelajaran:</strong></p>
+      <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem;">
+        <li>Memahami konsep dasar dan aturan pembentukan Question Tag.</li>
+        <li>Menggunakan Auxiliary Verb dan Pronoun secara tepat pada kalimat tag.</li>
+        <li>Melatih keterampilan listening, speaking, serta penulisan kalimat Question Tag.</li>
+      </ul>
+      <button class="btn" onclick="showPage('materi')">Mulai Belajar ➔</button>
+    </section>
+
+    <!-- 2. MATERI -->
+    <section id="materi" class="page">
+      <h2>📚 Konsep Question Tag</h2>
+      <p><strong>Question Tag</strong> adalah pertanyaan pendek di akhir kalimat yang berfungsi untuk meminta penegasan atau persetujuan dari pendengar.</p>
+
+      <h3>Aturan Utama:</h3>
+      <div style="background: #f3e8ff; padding: 1rem; border-left: 4px solid var(--primary); margin-bottom: 1rem;">
+        <p>1. Jika kalimat utama <strong>Positif (+)</strong>, maka tag-nya <strong>Negatif (-)</strong>.</p>
+        <p>2. Jika kalimat utama <strong>Negatif (-)</strong>, maka tag-nya <strong>Positif (+)</strong>.</p>
+        <p>3. Tag selalu menggunakan <strong>Auxiliary Verb / Modal</strong> + <strong>Subject Pronoun</strong>.</p>
+      </div>
+
+      <h3>Ringkasan Contoh Kalimat:</h3>
+      <table>
+        <tr><th>Kalimat Utama</th><th>Question Tag</th><th>Contoh Lengkap</th></tr>
+        <tr><td>Positif (+)</td><td>Negatif (-)</td><td>You are a student, <strong>aren't you?</strong> <button class="btn btn-audio" onclick="playAudio('You are a student, aren’t you?')">🔊</button></td></tr>
+        <tr><td>Negatif (-)</td><td>Positif (+)</td><td>She isn't coming, <strong>is she?</strong> <button class="btn btn-audio" onclick="playAudio('She isn’t coming, is she?')">🔊</button></td></tr>
+        <tr><td>Simple Present (+)</td><td>don't / doesn't</td><td>They play football, <strong>don't they?</strong> <button class="btn btn-audio" onclick="playAudio('They play football, don’t they?')">🔊</button></td></tr>
+        <tr><td>Simple Past (+)</td><td>didn't</td><td>He bought a car, <strong>didn't he?</strong> <button class="btn btn-audio" onclick="playAudio('He bought a car, didn’t he?')">🔊</button></td></tr>
+      </table>
+    </section>
+
+    <!-- 3. LISTENING -->
+    <section id="listening" class="page">
+      <h2>🎧 Listening Practice</h2>
+      <p>Dengarkan audio di bawah ini lalu pilih Question Tag yang tepat sesuai suara yang kamu dengar!</p>
+      
+      <div style="margin-top: 1.5rem;">
+        <button class="btn" onclick="playAudio('She is very clever, isn’t she?')">🔊 Putar Audio 1</button>
+        <div style="margin-top: 1rem;">
+          <button class="quiz-opt" onclick="checkListening(1, true, this)">A. She is very clever, isn't she?</button>
+          <button class="quiz-opt" onclick="checkListening(1, false, this)">B. She is very clever, is she?</button>
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <button class="btn" onclick="playAudio('They didn’t come late, did they?')">🔊 Putar Audio 2</button>
+        <div style="margin-top: 1rem;">
+          <button class="quiz-opt" onclick="checkListening(2, false, this)">A. They didn't come late, didn't they?</button>
+          <button class="quiz-opt" onclick="checkListening(2, true, this)">B. They didn't come late, did they?</button>
+        </div>
+      </div>
+
+      <div id="listening-feedback" class="feedback"></div>
+    </section>
+
+    <!-- 4. SPEAKING -->
+    <section id="speaking" class="page">
+      <h2>🗣️ Speaking Practice</h2>
+      <p>Dengarkan contoh pelafalan, lalu tirukan secara mandiri dengan menekan tombol **Mulai Bicara**.</p>
+      
+      <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1rem;">
+        <p style="font-size: 1.2rem; font-weight: bold;">"Your brother can swim, can't he?"</p>
+        <button class="btn btn-audio" onclick="playAudio('Your brother can swim, can’t he?')">🔊 Dengar Pelafalan</button>
+        <button class="btn" style="background:#059669; margin-top: 0.5rem;" onclick="startSpeechRecognition()">🎙️ Mulai Bicara</button>
+      </div>
+      <p><strong>Hasil ucapanmu:</strong> <span id="speech-result" style="font-style: italic; color: #475569;">(Klik 'Mulai Bicara' dan katakan kalimat di atas)</span></p>
+      <div id="speaking-feedback" class="feedback"></div>
+    </section>
+
+    <!-- 5. GRAMMAR PRACTICE -->
+    <section id="grammar" class="page">
+      <h2>✍️ Grammar Fill-in Practice</h2>
+      <p>Isi bagian yang kosong dengan Question Tag yang tepat (gunakan bentuk singkatan seperti <em>isn't, don't, didn't</em>)!</p>
+
+      <form id="grammar-form">
+        <p>1. You like English music, <input type="text" id="g1" class="input-fill" placeholder="e.g. don't you">?</p>
+        <p style="margin-top: 1rem;">2. Budi was not at school yesterday, <input type="text" id="g2" class="input-fill" placeholder="e.g. was he">?</p>
+        <br>
+        <button type="button" class="btn" onclick="checkGrammar()">Periksa Jawaban</button>
+      </form>
+
+      <div id="grammar-feedback" class="feedback"></div>
+    </section>
+
+    <!-- 6. QUIZ INTERAKTIF -->
+    <section id="quiz" class="page">
+      <h2>🎯 Quiz Interaktif</h2>
+      <div id="quiz-container">
+        <p id="quiz-question" style="font-size: 1.1rem; font-weight: bold; margin-bottom: 1rem;"></p>
+        <div id="quiz-options"></div>
+      </div>
+      <div id="quiz-feedback" class="feedback"></div>
+    </section>
+
+    <!-- 7. CHALLENGE / GAME -->
+    <section id="challenge" class="page">
+      <h2>🏆 Challenge: Drag & Drop</h2>
+      <p>Susun kata-kata acak berikut menjadi kalimat Question Tag yang utuh dan benar!</p>
+
+      <p><em>Target: "We are late, aren't we?"</em></p>
+      
+      <div class="drag-container" id="drag-source" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div class="draggable" draggable="true" ondragstart="drag(event)" id="w1">aren't we?</div>
+        <div class="draggable" draggable="true" ondragstart="drag(event)" id="w2">We</div>
+        <div class="draggable" draggable="true" ondragstart="drag(event)" id="w3">late,</div>
+        <div class="draggable" draggable="true" ondragstart="drag(event)" id="w4">are</div>
+      </div>
+
+      <p>Area Jawaban:</p>
+      <div style="min-height: 60px; background: #f1f5f9; padding: 0.5rem; border-radius: 8px; display: flex; gap: 0.5rem; align-items: center;" id="drag-target" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      
+      <br>
+      <button class="btn" onclick="checkChallenge()">Periksa Susunan</button>
+      <div id="challenge-feedback" class="feedback"></div>
+    </section>
+
+    <!-- 8. NILAI & PROGRESS -->
+    <section id="progress" class="page">
+      <h2>📊 Nilai & Progress</h2>
+      <p>Masukkan nama siswa untuk memuat dan mencetak sertifikat hasil belajar.</p>
+      <input type="text" id="student-name" class="input-fill" placeholder="Masukkan Nama Lengkap" style="width: 100%; max-width: 300px; margin-bottom: 1rem;"><br>
+      <button class="btn" onclick="generateCertificate()">Tampilkan Sertifikat</button>
+
+      <div id="certificate" style="display: none;">
+        <h3>📜 SERTIFIKAT KELULUSAN</h3>
+        <p style="margin-top: 1rem;">Sertifikat ini diberikan kepada:</p>
+        <h2 id="cert-name" style="color: var(--primary); margin: 0.5rem 0;">-</h2>
+        <p>Telah menyelesaikan seluruh materi dan latihan <strong>Question Tag (Bahasa Inggris SMP)</strong> dengan skor akumulasi:</p>
+        <h1 id="cert-score" style="font-size: 3rem; color: var(--accent); margin: 1rem 0;">0 / 100</h1>
+        <p id="cert-status">Status: Selesai</p>
+      </div>
+    </section>
+
+    <!-- 9. PETUNJUK -->
+    <section id="petunjuk" class="page">
+      <h2>💡 Petunjuk Penggunaan</h2>
+      <ul style="margin-left: 1.5rem; line-height: 1.8;">
+        <li>Gunakan <strong>Bar Navigasi</strong> di bagian atas untuk berpindah antarhalaman.</li>
+        <li>Pada menu <strong>Listening & Speaking</strong>, pastikan mikrofon dan pengeras suara perangkat aktif (Rekomendasi: Google Chrome).</li>
+        <li>Selesaikan latihan di menu <strong>Grammar, Quiz,</strong> dan <strong>Challenge</strong> untuk mendapatkan nilai penuh.</li>
+        <li>Dapatkan laporan hasil dan sertifikat pada menu <strong>Nilai & Progress</strong>.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <script>
+    // State Nilai
+    let scores = { listening: 0, grammar: 0, quiz: 0, challenge: 0 };
+
+    // Navigation System
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+      
+      document.getElementById(pageId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Text-to-Speech Engine
+    function playAudio(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        speechSynthesis.speak(utterance);
+      } else {
+        alert('Fitur Audio tidak didukung pada browser ini.');
+      }
+    }
+
+    // Listening Checker
+    function checkListening(qNum, isCorrect, btnElement) {
+      const fb = document.getElementById('listening-feedback');
+      if (isCorrect) {
+        fb.className = 'feedback correct';
+        fb.innerText = 'Excellent! Jawabanmu Benar.';
+        scores.listening = 25;
+      } else {
+        fb.className = 'feedback incorrect';
+        fb.innerText = 'Try Again! Cobalah mendengarkan kembali secara teliti.';
+      }
+      playAudio(isCorrect ? 'Excellent!' : 'Try again!');
+    }
+
+    // Speech Recognition Engine
+    function startSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const resSpan = document.getElementById('speech-result');
+      const fb = document.getElementById('speaking-feedback');
+
+      if (!SpeechRecognition) {
+        alert('Fitur pengenalan suara tidak didukung browser ini. Disarankan menggunakan Google Chrome.');
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      resSpan.innerText = "Mendengarkan...";
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        resSpan.innerText = `"${transcript}"`;
+        
+        if (transcript.toLowerCase().includes("can't he") || transcript.toLowerCase().includes("cannot he")) {
+          fb.className = 'feedback correct';
+          fb.innerText = 'Excellent! Pelafalanmu sangat baik.';
+          playAudio('Excellent!');
+        } else {
+          fb.className = 'feedback incorrect';
+          fb.innerText = 'Try Again! Pelafalan kurang pas, coba lagi.';
+          playAudio('Try again!');
+        }
+      };
+
+      recognition.start();
+    }
+
+    // Grammar Fill-in Checker
+    function checkGrammar() {
+      const g1 = document.getElementById('g1').value.trim().toLowerCase();
+      const g2 = document.getElementById('g2').value.trim().toLowerCase();
+      const fb = document.getElementById('grammar-feedback');
+
+      let score = 0;
+      if (g1 === "don't you") score += 12.5;
+      if (g2 === "was he") score += 12.5;
+
+      scores.grammar = score;
+
+      if (score === 25) {
+        fb.className = 'feedback correct';
+        fb.innerText = 'Excellent! Semua jawaban grammar tepat.';
+        playAudio('Excellent!');
+      } else {
+        fb.className = 'feedback incorrect';
+        fb.innerText = 'Try Again! Perhatikan hubungan positif/negatif pada Question Tag.';
+        playAudio('Try again!');
+      }
+    }
+
+    // Quiz System
+    const quizData = [
+      {
+        q: "She can play the piano, ___?",
+        options: ["can she?", "can't she?", "doesn't she?"],
+        ans: 1
+      },
+      {
+        q: "Tom didn't eat the apple, ___?",
+        options: ["did he?", "didn't he?", "was he?"],
+        ans: 0
+      }
+    ];
+
+    let currentQuizIndex = 0;
+    function loadQuiz() {
+      const q = quizData[currentQuizIndex];
+      document.getElementById('quiz-question').innerText = `${currentQuizIndex + 1}. ${q.q}`;
+      const optContainer = document.getElementById('quiz-options');
+      optContainer.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-opt';
+        btn.innerText = opt;
+        btn.onclick = () => answerQuiz(idx);
+        optContainer.appendChild(btn);
+      });
+    }
+
+    function answerQuiz(selectedIdx) {
+      const fb = document.getElementById('quiz-feedback');
+      if (selectedIdx === quizData[currentQuizIndex].ans) {
+        scores.quiz += 12.5;
+        fb.className = 'feedback correct';
+        fb.innerText = 'Excellent!';
+        playAudio('Excellent!');
+      } else {
+        fb.className = 'feedback incorrect';
+        fb.innerText = 'Try Again!';
+        playAudio('Try again!');
+      }
+
+      setTimeout(() => {
+        currentQuizIndex++;
+        if (currentQuizIndex < quizData.length) {
+          fb.style.display = 'none';
+          loadQuiz();
+        } else {
+          document.getElementById('quiz-container').innerHTML = '<p><strong>Quiz Selesai!</strong></p>';
+        }
+      }, 1200);
+    }
+
+    // Drag and Drop Logic
+    function allowDrop(ev) { ev.preventDefault(); }
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+    function drop(ev) {
+      ev.preventDefault();
+      const data = ev.dataTransfer.getData("text");
+      ev.target.appendChild(document.getElementById(data));
+    }
+
+    function checkChallenge() {
+      const target = document.getElementById('drag-target');
+      const text = Array.from(target.children).map(el => el.innerText).join(' ');
+      const fb = document.getElementById('challenge-feedback');
+
+      if (text === "We are late, aren't we?") {
+        fb.className = 'feedback correct';
+        fb.innerText = 'Excellent! Susunan kalimat tepat!';
+        scores.challenge = 25;
+        playAudio('Excellent!');
+      } else {
+        fb.className = 'feedback incorrect';
+        fb.innerText = 'Try Again! Perhatikan tata letak kalimat utama dan question tag.';
+        playAudio('Try again!');
+      }
+    }
+
+    // Certificate Generator
+    function generateCertificate() {
+      const name = document.getElementById('student-name').value.trim();
+      if (!name) {
+        alert('Harap masukkan nama terlebih dahulu.');
+        return;
+      }
+
+      const totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
+      document.getElementById('cert-name').innerText = name;
+      document.getElementById('cert-score').innerText = `${totalScore} / 100`;
+      document.getElementById('certificate').style.display = 'block';
+    }
+
+    // Initialize Quiz
+    loadQuiz();
+  </script>
+</body>
+</html>
